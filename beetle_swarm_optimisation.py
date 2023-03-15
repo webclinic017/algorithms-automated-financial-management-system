@@ -91,7 +91,7 @@ if __name__ == "__main__":
     c2 = 2
     c3 = 3
     w = 0.9
-    d0 = 2.0
+    d0 = 0.2
 
     g_best_rez, g_fitness_rez = beetle_swarm_optimisation(
         num_iterations,
@@ -106,6 +106,9 @@ if __name__ == "__main__":
         w,
         d0
     )
+
+    # max(g_best_rez) - the maximum value obtained represents the portfolio allocation
+    # that maximizes the expected return while minimizing the risk
 
     print(g_best_rez)
     print(g_fitness_rez)
