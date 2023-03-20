@@ -1,0 +1,6 @@
+fastapi
+numpy
+pandas
+pymongo
+python-dotenv
+requests

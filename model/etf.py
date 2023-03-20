@@ -10,7 +10,7 @@ class ETF:
         :param symbol: string, symbol of the ETF
         :param full_name: string, full name of the ETF
         :param price_history: list of dictionaries,
-                              each dictionary has a timestamp and a close price for a different day
+                              each dictionary has a timestamp (double) and a close price (double) for a different day
         """
 
         self._contract_id = contract_id
