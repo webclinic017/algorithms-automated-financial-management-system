@@ -1,6 +1,7 @@
 import requests
 
 from model.etf import ETF
+from model.exceptions.service_exception import ServiceException
 
 
 def get_ibkr_price_history_for_etfs():
@@ -28,9 +29,14 @@ def get_ibkr_price_history_for_etfs():
     }
 
     all_etfs = []
-    for key, val in etfs.items():
-        request = requests.get(f"https://localhost:5000/v1/api/iserver/marketdata/history?conid={val}&period=5y&bar=1d",
-                               verify=False)
+    for etf_symbol, contract_id in etfs.items():
+        request = requests.get(
+            f"https://localhost:5000/v1/api/iserver/marketdata/history?conid={contract_id}&period=5y&bar=1d",
+            verify=False
+        )
+
+        if not request.ok:
+            raise ServiceException(f"Could not fetch data for {etf_symbol}")
 
         response = request.json()
 
@@ -42,10 +48,10 @@ def get_ibkr_price_history_for_etfs():
             })
 
         all_etfs.append(ETF(
-            val,
-            response["symbol"],
-            response["text"],
-            price_history
+            contract_id=contract_id,
+            symbol=response["symbol"],
+            full_name=response["text"],
+            price_history=price_history
         ))
 
     return all_etfs

@@ -31,7 +31,9 @@ class ETFRepository:
         try:
             client.server_info()
         except ServerSelectionTimeoutError:
-            raise TimeoutError("Invalid API for MongoDB connection string or timed out when attempting to connect!")
+            raise RepositoryException(
+                "Invalid API for MongoDB connection string or timed out when attempting to connect!"
+            )
 
         logging.info("Databases: " + str(client.list_database_names()))
         return client
@@ -52,8 +54,12 @@ class ETFRepository:
         return db[unsharded_collection_name]
 
     def clear_repository_collection(self):
-        if not self._collection.drop():
-            raise RepositoryException("Cannot clear the collection! The MongoDB collection does not exist!")
+        result = self._collection.delete_many({})
+
+        if result == 0:
+            raise RepositoryException("No document was deleted!")
+
+        logging.info("Cleared all documents from repository!")
 
     def get_all(self):
         all_etfs_json = list(self._collection.find({}))
